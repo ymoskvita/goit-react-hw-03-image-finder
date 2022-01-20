@@ -31,7 +31,7 @@ export default class App extends Component {
             this.setState({ status: 'idle', images: null});
             return toast.error(`No matches found`)
           }
-          this.setState({ images: images.hits, status: 'resolved', page: this.state.page + 1 })
+          this.setState({ images: images.hits, status: 'resolved'})
         })
         .catch(error => this.setState({ error, status: 'rejected'}))
     }
@@ -52,7 +52,7 @@ export default class App extends Component {
     this.setState({ page: this.state.page + 1 });
 
     imagesApi
-      .fetchImages(this.state.searchQuery, this.state.page)
+      .fetchImages(this.state.searchQuery, this.state.page + 1)
       .then(images => {
         this.setState(prevState => ({
           images: [...prevState.images, ...images.hits],
