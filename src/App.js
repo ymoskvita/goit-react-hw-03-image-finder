@@ -20,9 +20,9 @@ export default class App extends Component {
     status: 'idle',
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
-      this.setState({ page: 1, status: 'pending' });
+      await this.setState({ page: 1, status: 'pending' });
 
       imagesApi
         .fetchImages(this.state.searchQuery, this.state.page)
@@ -49,7 +49,7 @@ export default class App extends Component {
   };
 
   handleLoadMoreBnt = () => {
-    this.setState({ page: this.state.page + 1 });
+    this.setState(prevState => ({page: prevState.page + 1}));
 
     imagesApi
       .fetchImages(this.state.searchQuery, this.state.page + 1)
