@@ -18,11 +18,12 @@ export default class App extends Component {
     error: null,
     page: 1,
     status: 'idle',
+    lastPage: false,
   };
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
-      await this.setState({ page: 1, status: 'pending' });
+      await this.setState({ page: 1, status: 'pending', lastPage: false });
 
       imagesApi
         .fetchImages(this.state.searchQuery, this.state.page)
@@ -57,11 +58,12 @@ export default class App extends Component {
         this.setState(prevState => ({
           images: [...prevState.images, ...images.hits],
         }));
+        images.hits.length < 11 && this.setState({ lastPage: true });
       })
   }
 
   render() {
-    const {showModal, selectedImage, images, status, error } = this.state;
+    const {showModal, selectedImage, images, status, error, lastPage } = this.state;
 
     return (
       <Container>
@@ -81,7 +83,7 @@ export default class App extends Component {
             images={images}
             onImageClick={this.handleImageClick} />
         }
-        {images && images.length > 11 && <Button onClick={this.handleLoadMoreBnt}/>}
+        {images && !lastPage && <Button onClick={this.handleLoadMoreBnt}/>}
         {showModal &&
           <Modal onClose={this.handleImageClick}>
             <img src={selectedImage} alt="" onClick={this.handleImageClick}/>
